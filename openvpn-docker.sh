@@ -16,6 +16,10 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plug
 # 2. OpenVPN Docker Image Installation and Run
 docker pull openvpn/openvpn-as
 
+# Ensure the socket directory exists and has the correct permissions
+sudo mkdir -p /usr/local/openvpn_as/etc/sock
+sudo chmod 755 /usr/local/openvpn_as/etc/sock
+
 # Prompt user for port numbers
 echo "Default ports are:"
 echo " - Web interface: 943"
@@ -46,5 +50,5 @@ sudo docker run -d \
 # Set the custom password for OpenVPN user
 sudo docker exec -it openvpn-as /bin/bash -c "sacli --user openvpn --new_pass 'Useronly1!' SetLocalPassword && sacli start"
 
-# 3. Display Information
+# Display Information
 echo -e "\e
