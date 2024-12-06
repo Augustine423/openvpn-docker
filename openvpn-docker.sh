@@ -33,4 +33,5 @@ sudo docker exec -it openvpn-as /bin/bash -c "sacli --user openvpn --new_pass $C
 PUBLIC_IP=$(curl -s http://checkip.amazonaws.com)
 PRIVATE_IP=$(hostname -I | awk '{print $1}')
 
+# Echo statements with green text
 echo -e "\e
