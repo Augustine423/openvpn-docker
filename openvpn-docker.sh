@@ -43,8 +43,8 @@ sudo docker run -d \
   -v /path/to/data:/openvpn \
   openvpn/openvpn-as
 
+# Set the custom password for OpenVPN user
+sudo docker exec -it openvpn-as /bin/bash -c "sacli --user openvpn --new_pass 'Useronly1!' SetLocalPassword && sacli start"
+
 # 3. Display Information
-echo -e "\e[32mOpenVPN Access Server is running.\e[0m"
-echo -e "\e[32mUsername: openvpn\e[0m"
-echo -e "\e[32mPassword: [Set using sacli command]\e"
 echo -e "\e
