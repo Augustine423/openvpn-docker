@@ -1,37 +1,32 @@
 #!/bin/bash
 
-# Add Docker's official GPG key and set up the repository
+# Update package information and install prerequisites
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl
+
+# Add Docker's official GPG key
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Add the Docker repository to APT sources
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+$(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
+# Update package information and install Docker
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Pull the OpenVPN Access Server Docker image
-sudo docker pull openvpn/openvpn-as
+# Pull and run the OpenVPN Access Server Docker image
+docker pull openvpn/openvpn-as
+docker run -d \
+  --name=openvpn-as --cap-add=NET_ADMIN \
+  -p 943:943 -p 443:443 -p 1194:1194/udp \
+  -v /path/to/data:/openvpn \
+  openvpn/openvpn-as
 
-# Prompt for port number
-read -p "Enter the port number for OpenVPN (default 1194): " VPN_PORT
-VPN_PORT=${VPN_PORT:-1194}
+# Change OpenVPN admin password (Replace <PASSWORD> with your desired password)
+docker exec -it openvpn-as /bin/bash -c 'sacli --user openvpn --new_pass <PASSWORD> SetLocalPassword && sacli start'
 
-# Run the OpenVPN Access Server container
-sudo docker run -d --name openvpn-as --cap-add=NET_ADMIN -p $VPN_PORT:$VPN_PORT/udp -p 443:443 -e "OPENVPN_ADMIN_PASSWORD=Useronly1!" -e "OPENVPN_AUTH_USER_PASS_ENABLED=1" -e "OPENVPN_AUTH_USER_PASS_STANDALONE=1" -e "OPENVPN_EASY_RSA=1" openvpn/openvpn-as
-
-# Set a custom password for the OpenVPN admin user
-CUSTOM_PASSWORD="Useronly1!"
-sudo docker exec -it openvpn-as /bin/bash -c "sacli --user openvpn --new_pass $CUSTOM_PASSWORD SetLocalPassword && sacli start"
-
-# Get the public and private IP addresses
-PUBLIC_IP=$(curl -s http://checkip.amazonaws.com)
-PRIVATE_IP=$(hostname -I | awk '{print $1}')
-
-# Echo statements with green text
+# Display information
 echo -e "\e
