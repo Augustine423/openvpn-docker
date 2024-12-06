@@ -33,7 +33,6 @@ sudo docker exec -it openvpn-as /bin/bash -c "sacli --user openvpn --new_pass $C
 PUBLIC_IP=$(curl -s http://checkip.amazonaws.com)
 PRIVATE_IP=$(hostname -I | awk '{print $1}')
 
-echo -e "\
 echo "OpenVPN Access Server is now running. Access the admin UI at: https://$PUBLIC_IP:443/admin"
 echo "Download OpenVPN profiles at: https://$PUBLIC_IP:443/"
 echo "Admin username: openvpn"
