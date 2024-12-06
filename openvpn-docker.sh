@@ -37,7 +37,7 @@ else
 fi
 
 # Run the OpenVPN container with the specified ports
-docker run -d \
+sudo docker run -d \
   --name=openvpn-as --cap-add=NET_ADMIN \
   -p $PORT_943:943 -p $PORT_443:443 -p $PORT_1194:1194/udp \
   -v /path/to/data:/openvpn \
@@ -46,4 +46,5 @@ docker run -d \
 # 3. Display Information
 echo -e "\e[32mOpenVPN Access Server is running.\e[0m"
 echo -e "\e[32mUsername: openvpn\e[0m"
-echo -e "\e[32mPassword: [Set using sacli command]\e
+echo -e "\e[32mPassword: [Set using sacli command]\e"
+echo -e "\e
