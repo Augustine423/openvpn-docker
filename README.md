@@ -1,4 +1,4 @@
-# OpenVPN Access Server Installation Script
+# OpenVPN Access Server on Docker Installation Script
 
 This repository contains a script to set up an OpenVPN Access Server using Docker on Ubuntu. The script includes Docker installation and configuration for OpenVPN Access Server.
 
